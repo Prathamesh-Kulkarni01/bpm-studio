@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertDiagramSchema, updateDiagramSchema } from "@shared/schema";
@@ -83,6 +83,151 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete diagram" });
     }
+  });
+
+  // ======= Mock API endpoints for the dynamic property panel system =======
+  
+  // Service operations API - for dynamic dropdowns based on selected endpoint
+  app.get("/api/services", (req: Request, res: Response) => {
+    const endpoint = req.query.endpoint as string || '';
+    
+    // Simulate a slight delay to demonstrate loading states
+    setTimeout(() => {
+      // Return different operations based on the endpoint
+      if (!endpoint || endpoint.trim() === '') {
+        res.status(200).json([]);
+      } else if (endpoint.includes('payment')) {
+        res.status(200).json([
+          { id: 'process_payment', name: 'Process Payment', deprecated: false },
+          { id: 'refund_payment', name: 'Refund Payment', deprecated: false },
+          { id: 'verify_payment', name: 'Verify Payment', deprecated: false }
+        ]);
+      } else if (endpoint.includes('notification')) {
+        res.status(200).json([
+          { id: 'send_email', name: 'Send Email', deprecated: false },
+          { id: 'send_sms', name: 'Send SMS', deprecated: false },
+          { id: 'send_push', name: 'Send Push Notification', deprecated: true }
+        ]);
+      } else if (endpoint.includes('order')) {
+        res.status(200).json([
+          { id: 'create_order', name: 'Create Order', deprecated: false },
+          { id: 'update_order', name: 'Update Order', deprecated: false },
+          { id: 'cancel_order', name: 'Cancel Order', deprecated: false },
+          { id: 'ship_order', name: 'Ship Order', deprecated: false }
+        ]);
+      } else {
+        // Default operations for any other endpoints
+        res.status(200).json([
+          { id: 'get_data', name: 'Get Data', deprecated: false },
+          { id: 'update_data', name: 'Update Data', deprecated: false },
+          { id: 'delete_data', name: 'Delete Data', deprecated: false }
+        ]);
+      }
+    }, 500); // 500ms delay
+  });
+  
+  // Users endpoint - for dynamic user assignment dropdowns
+  app.get("/api/users/search", (req: Request, res: Response) => {
+    const query = (req.query.q as string || '').toLowerCase();
+    
+    // Simulate user search based on query
+    const allUsers = [
+      { id: 'user1', name: 'John Smith', role: 'admin' },
+      { id: 'user2', name: 'Jane Doe', role: 'manager' },
+      { id: 'user3', name: 'Michael Johnson', role: 'developer' },
+      { id: 'user4', name: 'Sarah Williams', role: 'designer' },
+      { id: 'user5', name: 'Robert Brown', role: 'analyst' }
+    ];
+    
+    // Filter users based on query
+    const filteredUsers = query
+      ? allUsers.filter(user => 
+          user.name.toLowerCase().includes(query) || 
+          user.id.toLowerCase().includes(query) ||
+          user.role.toLowerCase().includes(query)
+        )
+      : allUsers;
+    
+    setTimeout(() => {
+      res.status(200).json(filteredUsers);
+    }, 300);
+  });
+  
+  // Roles endpoint - for role assignment dropdowns
+  app.get("/api/roles", (req: Request, res: Response) => {
+    setTimeout(() => {
+      res.status(200).json([
+        { id: 'admin', name: 'Administrator' },
+        { id: 'manager', name: 'Manager' },
+        { id: 'developer', name: 'Developer' },
+        { id: 'designer', name: 'Designer' },
+        { id: 'analyst', name: 'Analyst' },
+        { id: 'qa', name: 'Quality Assurance' }
+      ]);
+    }, 300);
+  });
+  
+  // Process variables endpoint - for dynamic process variables in expressions
+  app.get("/api/process/variables", (req: Request, res: Response) => {
+    const processId = req.query.processId as string;
+    
+    // Return different variables based on the process ID
+    setTimeout(() => {
+      if (processId === 'order_process') {
+        res.status(200).json([
+          { name: 'orderId', type: 'string' },
+          { name: 'orderAmount', type: 'number' },
+          { name: 'customer', type: 'object' },
+          { name: 'items', type: 'array' },
+          { name: 'approved', type: 'boolean' }
+        ]);
+      } else if (processId === 'payment_process') {
+        res.status(200).json([
+          { name: 'paymentId', type: 'string' },
+          { name: 'amount', type: 'number' },
+          { name: 'currency', type: 'string' },
+          { name: 'paymentMethod', type: 'string' },
+          { name: 'successful', type: 'boolean' }
+        ]);
+      } else {
+        res.status(200).json([
+          { name: 'id', type: 'string' },
+          { name: 'name', type: 'string' },
+          { name: 'value', type: 'number' },
+          { name: 'status', type: 'string' },
+          { name: 'complete', type: 'boolean' }
+        ]);
+      }
+    }, 400);
+  });
+  
+  // XML validation endpoint - simulates checking XML validity
+  app.post("/api/xml/validate", (req: Request, res: Response) => {
+    const { xml } = req.body;
+    
+    if (!xml) {
+      return res.status(400).json({ valid: false, errors: ["No XML provided"] });
+    }
+    
+    // Very simple validation just for demonstration
+    if (!xml.includes('<?xml')) {
+      return res.status(200).json({ 
+        valid: false, 
+        errors: ["Missing XML declaration"]
+      });
+    }
+    
+    if (xml.includes('<invalid>')) {
+      return res.status(200).json({ 
+        valid: false, 
+        errors: ["Found invalid element: <invalid>"]
+      });
+    }
+    
+    // Simulate longer processing for complex XML
+    setTimeout(() => {
+      res.status(200).json({ valid: true });
+    }, xml.length > 1000 ? 800 : 300);
   });
 
   const httpServer = createServer(app);

@@ -6,6 +6,7 @@ export type PropertyType =
   | 'textarea'
   | 'select'
   | 'checkbox'
+  | 'switch'
   | 'number'
   | 'color'
   | 'date'
@@ -379,10 +380,10 @@ export const defaultPanelConfig: PropertyPanelConfig = {
           label: 'Retries',
           type: 'number',
           defaultValue: 3,
-          validation: {
-            min: 0,
-            max: 10
-          },
+          validation: [
+            { type: 'min', value: 0, message: 'Retries must be non-negative' },
+            { type: 'max', value: 10, message: 'Retries cannot exceed 10' }
+          ],
           conditions: [
             { field: 'executionType', operator: 'equals', value: 'async' }
           ]
