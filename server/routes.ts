@@ -229,6 +229,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(200).json({ valid: true });
     }, xml.length > 1000 ? 800 : 300);
   });
+  
+  // Custom model endpoint - returns different models based on useCustom parameter
+  app.get("/api/custom-models", (req: Request, res: Response) => {
+    const useCustom = req.query.useCustom === 'true';
+    
+    setTimeout(() => {
+      if (useCustom) {
+        // Return custom models if useCustom is true
+        res.status(200).json([
+          { id: 'CustomOrder', name: 'Custom Order', description: 'Custom order model' },
+          { id: 'CustomInvoice', name: 'Custom Invoice', description: 'Custom invoice model' },
+          { id: 'CustomReceipt', name: 'Custom Receipt', description: 'Custom receipt model' },
+          { id: 'CustomRequest', name: 'Custom Request', description: 'Custom request model' },
+          { id: 'CustomForm', name: 'Custom Form', description: 'Custom form model' },
+        ]);
+      } else {
+        // Return real models if useCustom is false
+        res.status(200).json([
+          { id: 'Order', name: 'Order', description: 'Order management model' },
+          { id: 'Invoice', name: 'Invoice', description: 'Invoice management model' },
+          { id: 'Receipt', name: 'Receipt', description: 'Receipt management model' },
+          { id: 'Request', name: 'Request', description: 'Request management model' },
+          { id: 'Form', name: 'Form', description: 'Form management model' },
+          { id: 'User', name: 'User', description: 'User management model' },
+          { id: 'Product', name: 'Product', description: 'Product management model' },
+        ]);
+      }
+    }, 300);
+  });
 
   const httpServer = createServer(app);
 

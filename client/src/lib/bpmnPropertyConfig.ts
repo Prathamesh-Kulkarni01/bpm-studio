@@ -486,6 +486,60 @@ export const bpmnPropertyPanelConfig: PropertyPanelSchema = {
         condition: "element.type === 'bpmn:SequenceFlow'"
       }
     },
+    // Custom model settings for Start Event and End Event
+    {
+      name: "useCustomModel",
+      type: "Boolean",
+      group: "Model Configuration",
+      description: "Use a custom model for this event.",
+      defaultValue: false,
+      fetchOptions: false,
+      validation: {
+        required: false
+      },
+      dependencies: [],
+      visibility: {
+        condition: "element.type === 'bpmn:StartEvent' || element.type === 'bpmn:EndEvent'"
+      }
+    },
+    {
+      name: "modelType",
+      type: "Enum",
+      group: "Model Configuration",
+      description: "Select the model type for this event.",
+      placeholder: "Select model...",
+      fetchOptions: true,
+      optionsUrl: "/api/custom-models",
+      optionsFilter: (element, values) => {
+        // Send the useCustomModel value to filter the models
+        return { useCustom: values.useCustomModel };
+      },
+      validation: {
+        required: true
+      },
+      dependencies: [],
+      visibility: {
+        condition: "element.type === 'bpmn:StartEvent' || element.type === 'bpmn:EndEvent'",
+        dependsOn: ["useCustomModel"]
+      }
+    },
+    {
+      name: "modelId",
+      type: "String",
+      group: "Model Configuration",
+      description: "Unique identifier for this model instance.",
+      placeholder: "Enter model ID...",
+      fetchOptions: false,
+      validation: {
+        required: true,
+        pattern: "^[a-zA-Z0-9_-]+$"
+      },
+      dependencies: [],
+      visibility: {
+        condition: "element.type === 'bpmn:StartEvent' || element.type === 'bpmn:EndEvent'",
+        dependsOn: ["modelType"]
+      }
+    },
     // Event specific properties
     {
       name: "eventDefinitionType",
@@ -793,6 +847,17 @@ export const bpmnPropertyPanelConfig: PropertyPanelSchema = {
       collapsible: false
     },
     {
+      id: "Model Configuration",
+      label: "Model Configuration",
+      icon: React.createElement(DatabaseIcon, { className: "h-4 w-4" }),
+      order: 15,
+      collapsible: true,
+      collapsed: false,
+      visibility: {
+        condition: "element.type === 'bpmn:StartEvent' || element.type === 'bpmn:EndEvent'"
+      }
+    },
+    {
       id: "Configuration",
       label: "Configuration",
       icon: React.createElement(ServerIcon, { className: "h-4 w-4" }),
@@ -922,7 +987,7 @@ export const bpmnPropertyPanelConfig: PropertyPanelSchema = {
       id: "general",
       label: "General",
       order: 10,
-      groups: ["General", "Configuration", "Assignment", "Form", "Gateway", "Conditional"]
+      groups: ["General", "Model Configuration", "Configuration", "Assignment", "Form", "Gateway", "Conditional"]
     },
     {
       id: "advanced",
