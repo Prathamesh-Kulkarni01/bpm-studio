@@ -1,0 +1,286 @@
+{
+  "properties": [
+    {
+      "name": "id",
+      "type": "String",
+      "group": "General",
+      "description": "Unique identifier for the BPMN element.",
+      "fetchOptions": false,
+      "validation": {
+        "required": true,
+        "unique": true,
+        "format": "alphanumeric"
+      },
+      "dependencies": [],
+      "visibility": {
+        "condition": "always"
+      }
+    },
+    {
+      "name": "name",
+      "type": "String",
+      "group": "General",
+      "description": "Display name of the BPMN element.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": [],
+      "visibility": {
+        "condition": "always"
+      }
+    },
+    {
+      "name": "isExecutable",
+      "type": "Boolean",
+      "group": "General",
+      "description": "Indicates whether the process is executable.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["bpmn:Process", "bpmn:Participant"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:Process' || element.type === 'bpmn:Participant'"
+      }
+    },
+    {
+      "name": "script",
+      "type": "String",
+      "group": "Configuration",
+      "description": "Script content for script tasks.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["bpmn:ScriptTask"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:ScriptTask'"
+      }
+    },
+    {
+      "name": "scriptFormat",
+      "type": "String",
+      "group": "Configuration",
+      "description": "Format of the script (e.g., JavaScript, Groovy).",
+      "fetchOptions": false,
+      "validation": {
+        "required": true
+      },
+      "dependencies": ["bpmn:ScriptTask"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:ScriptTask'"
+      }
+    },
+    {
+      "name": "jobPriority",
+      "type": "String",
+      "group": "Job Configuration",
+      "description": "Priority of the job.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["camunda:JobPriorized"],
+      "visibility": {
+        "condition": "element.type === 'camunda:JobPriorized'"
+      }
+    },
+    {
+      "name": "retryTimeCycle",
+      "type": "String",
+      "group": "Job Configuration",
+      "description": "Retry time cycle for failed jobs.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["camunda:AsyncCapable"],
+      "visibility": {
+        "condition": "element.type === 'camunda:AsyncCapable'"
+      }
+    },
+    {
+      "name": "topic",
+      "type": "String",
+      "group": "External Task Configuration",
+      "description": "Topic for the external task.",
+      "fetchOptions": false,
+      "validation": {
+        "required": true
+      },
+      "dependencies": ["camunda:ExternalTask"],
+      "visibility": {
+        "condition": "element.type === 'camunda:ExternalTask'"
+      }
+    },
+    {
+      "name": "loopCardinality",
+      "type": "String",
+      "group": "Multi-Instance",
+      "description": "Number of iterations for the loop.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["bpmn:MultiInstanceLoopCharacteristics"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:MultiInstanceLoopCharacteristics'"
+      }
+    },
+    {
+      "name": "collection",
+      "type": "String",
+      "group": "Multi-Instance",
+      "description": "Collection for multi-instance execution.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["bpmn:MultiInstanceLoopCharacteristics"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:MultiInstanceLoopCharacteristics'"
+      }
+    },
+    {
+      "name": "elementVariable",
+      "type": "String",
+      "group": "Multi-Instance",
+      "description": "Variable for the current element in the loop.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["bpmn:MultiInstanceLoopCharacteristics"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:MultiInstanceLoopCharacteristics'"
+      }
+    },
+    {
+      "name": "executionListeners",
+      "type": "Array",
+      "group": "Listeners",
+      "description": "Listeners triggered during execution.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": [],
+      "visibility": {
+        "condition": "always"
+      }
+    },
+    {
+      "name": "taskListeners",
+      "type": "Array",
+      "group": "Listeners",
+      "description": "Listeners triggered during task lifecycle.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["bpmn:UserTask"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:UserTask'"
+      }
+    },
+    {
+      "name": "menuName",
+      "type": "String",
+      "group": "Menu/Action",
+      "description": "Name of the menu.",
+      "fetchOptions": false,
+      "validation": {
+        "required": true
+      },
+      "dependencies": ["bpmn:UserTask"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:UserTask'"
+      }
+    },
+    {
+      "name": "roles",
+      "type": "Array",
+      "group": "Menu/Action",
+      "description": "Roles allowed to access the menu.",
+      "fetchOptions": true,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["bpmn:UserTask"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:UserTask'"
+      }
+    },
+    {
+      "name": "comments",
+      "type": "Array",
+      "group": "Comments",
+      "description": "Comments associated with the BPMN element.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": [],
+      "visibility": {
+        "condition": "always"
+      }
+    },
+    {
+      "name": "inputVariables",
+      "type": "Array",
+      "group": "Variables",
+      "description": "Input variables for the element.",
+      "fetchOptions": true,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["bpmn:Task", "bpmn:UserTask"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:Task' || element.type === 'bpmn:UserTask'"
+      }
+    },
+    {
+      "name": "outputVariables",
+      "type": "Array",
+      "group": "Variables",
+      "description": "Output variables from the element.",
+      "fetchOptions": true,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["bpmn:Task", "bpmn:UserTask"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:Task' || element.type === 'bpmn:UserTask'"
+      }
+    },
+    {
+      "name": "conditionExpression",
+      "type": "String",
+      "group": "Conditional",
+      "description": "Expression for conditional flows.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["bpmn:SequenceFlow"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:SequenceFlow'"
+      }
+    },
+    {
+      "name": "historyTimeToLive",
+      "type": "String",
+      "group": "History",
+      "description": "Time to live for historical data.",
+      "fetchOptions": false,
+      "validation": {
+        "required": false
+      },
+      "dependencies": ["bpmn:Process", "bpmn:Participant"],
+      "visibility": {
+        "condition": "element.type === 'bpmn:Process' || element.type === 'bpmn:Participant'"
+      }
+    }
+  ]
+}

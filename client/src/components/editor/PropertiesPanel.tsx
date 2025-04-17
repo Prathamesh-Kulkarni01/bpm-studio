@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { XIcon } from "lucide-react";
 import { PropertyPanel } from "./properties/PropertyPanel";
+import ConfigurablePropertyPanel from "./properties/ConfigurablePropertyPanel";
 import { defaultPanelConfig } from "@/lib/propertyPanelConfig";
+import { bpmnPropertyPanelConfig } from "@/lib/bpmnPropertyConfig";
 
 interface PropertiesPanelProps {
   width: number;
@@ -18,6 +20,8 @@ export default function PropertiesPanel({
 }: PropertiesPanelProps) {
   const [isResizing, setIsResizing] = useState(false);
   const resizeRef = useRef<HTMLDivElement>(null);
+  // Use the JSON-based configurable panel by default
+  const [useJSONConfig, setUseJSONConfig] = useState(true);
 
   // Resize handling
   useEffect(() => {
@@ -76,17 +80,33 @@ export default function PropertiesPanel({
       <div className="bg-white border-l border-gray-200 flex flex-col" style={{ width }}>
         <div className="p-3 border-b border-gray-200 flex justify-between items-center">
           <h2 className="font-medium text-sm">Properties</h2>
-          <button className="text-gray-500 hover:text-gray-700 p-1">
-            <XIcon className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-3">
+            <button 
+              className="text-xs text-blue-600 hover:text-blue-800"
+              onClick={() => setUseJSONConfig(!useJSONConfig)}
+            >
+              {useJSONConfig ? 'Use Class-based' : 'Use JSON-based'}
+            </button>
+            <button className="text-gray-500 hover:text-gray-700 p-1">
+              <XIcon className="h-4 w-4" />
+            </button>
+          </div>
         </div>
         
-        {/* New configurable property panel */}
-        <PropertyPanel
-          selectedElement={selectedElement}
-          modeler={modeler}
-          customConfig={defaultPanelConfig}
-        />
+        {/* Toggle between the two implementations */}
+        {useJSONConfig ? (
+          <ConfigurablePropertyPanel
+            schema={bpmnPropertyPanelConfig}
+            element={selectedElement}
+            modeler={modeler}
+          />
+        ) : (
+          <PropertyPanel
+            selectedElement={selectedElement}
+            modeler={modeler}
+            customConfig={defaultPanelConfig}
+          />
+        )}
       </div>
     </>
   );

@@ -34,23 +34,28 @@ export default function ElementsPanel({ width, onWidthChange }: ElementsPanelPro
     { type: "bpmn:Task", name: "Task", icon: <SquareIcon className="w-5 h-5" />, category: "Activities" },
     { type: "bpmn:UserTask", name: "User Task", icon: <UserCircleIcon className="w-5 h-5" />, category: "Activities" },
     { type: "bpmn:ServiceTask", name: "Service Task", icon: <CogIcon className="w-5 h-5" />, category: "Activities" },
+    { type: "bpmn:BusinessRuleTask", name: "Business Rule", icon: <BoxesIcon className="w-5 h-5" />, category: "Activities" },
+    { type: "bpmn:ScriptTask", name: "Script Task", icon: <SquareIcon className="w-5 h-5" />, category: "Activities" },
+    { type: "bpmn:ManualTask", name: "Manual Task", icon: <SquareIcon className="w-5 h-5" />, category: "Activities" },
     { type: "bpmn:SubProcess", name: "Subprocess", icon: <BoxesIcon className="w-5 h-5" />, category: "Activities" },
     
     // Gateways
     { type: "bpmn:ExclusiveGateway", name: "Exclusive", icon: <DiamondIcon className="w-5 h-5" />, category: "Gateways" },
     { type: "bpmn:ParallelGateway", name: "Parallel", icon: <DiamondIcon className="w-5 h-5" />, category: "Gateways" },
     { type: "bpmn:InclusiveGateway", name: "Inclusive", icon: <DiamondIcon className="w-5 h-5" />, category: "Gateways" },
+    { type: "bpmn:EventBasedGateway", name: "Event Based", icon: <DiamondIcon className="w-5 h-5" />, category: "Gateways" },
     
     // Events
-    { type: "bpmn:StartEvent", name: "Start", icon: <CircleIcon className="w-5 h-5" />, category: "Events" },
-    { type: "bpmn:EndEvent", name: "End", icon: <CircleIcon className="w-5 h-5" />, category: "Events" },
-    { type: "bpmn:IntermediateThrowEvent", name: "Intermediate", icon: <CircleIcon className="w-5 h-5" />, category: "Events" },
-    { type: "bpmn:TimerEventDefinition", name: "Timer", icon: <TimerIcon className="w-5 h-5" />, category: "Events" },
-    { type: "bpmn:MessageEventDefinition", name: "Message", icon: <MessageCircleIcon className="w-5 h-5" />, category: "Events" },
+    { type: "bpmn:StartEvent", name: "Start Event", icon: <CircleIcon className="w-5 h-5" />, category: "Events" },
+    { type: "bpmn:EndEvent", name: "End Event", icon: <CircleIcon className="w-5 h-5" />, category: "Events" },
+    { type: "bpmn:IntermediateThrowEvent", name: "Throw Event", icon: <CircleIcon className="w-5 h-5" />, category: "Events" },
+    { type: "bpmn:IntermediateCatchEvent", name: "Catch Event", icon: <CircleIcon className="w-5 h-5" />, category: "Events" },
+    { type: "bpmn:BoundaryEvent", name: "Boundary Event", icon: <CircleIcon className="w-5 h-5" />, category: "Events" },
     
     // Connections
     { type: "bpmn:SequenceFlow", name: "Sequence Flow", icon: <ArrowRightIcon className="w-5 h-5" />, category: "Connections" },
     { type: "bpmn:MessageFlow", name: "Message Flow", icon: <ArrowRightIcon className="w-5 h-5" />, category: "Connections" },
+    { type: "bpmn:Association", name: "Association", icon: <ArrowRightIcon className="w-5 h-5" />, category: "Connections" },
   ];
 
   const groupedElements = elements.reduce((groups, element) => {
