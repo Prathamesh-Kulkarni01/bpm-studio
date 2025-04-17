@@ -127,19 +127,113 @@ export default function Canvas({
     }
   }, [modeler, xml]);
 
+  // Zoom controls
   const handleZoomIn = () => {
     if (!modeler) return;
     modeler.get("zoomScroll").stepZoom(1);
+    // Update zoom level after changing zoom
+    const canvas = modeler.get("canvas");
+    setZoomLevel(canvas.zoom());
   };
 
   const handleZoomOut = () => {
     if (!modeler) return;
     modeler.get("zoomScroll").stepZoom(-1);
+    // Update zoom level after changing zoom
+    const canvas = modeler.get("canvas");
+    setZoomLevel(canvas.zoom());
   };
 
   const handleZoomReset = () => {
     if (!modeler) return;
     modeler.get("canvas").zoom("fit-viewport", "auto");
+    // Update zoom level after changing zoom
+    const canvas = modeler.get("canvas");
+    setZoomLevel(canvas.zoom());
+  };
+
+  // Import BPMN XML
+  const handleImportXml = (xml: string) => {
+    if (!modeler) return;
+    
+    modeler.importXML(xml)
+      .then(() => {
+        console.log("BPMN diagram imported successfully");
+        // Fit the diagram to the viewport
+        modeler.get("canvas").zoom("fit-viewport", "auto");
+      })
+      .catch((err: Error) => {
+        console.error("Error importing BPMN diagram", err);
+      });
+  };
+
+  const handleSave = () => {
+    if (!modeler) return;
+    
+    modeler.saveXML({ format: true })
+      .then(({ xml }: { xml: string }) => {
+        console.log("BPMN diagram saved", xml);
+        // Here you would typically save to server or localStorage
+        // For now, just log to console
+      })
+      .catch((err: Error) => {
+        console.error("Error saving BPMN diagram", err);
+      });
+  };
+
+  const handleSaveAs = () => {
+    if (!modeler) return;
+    
+    modeler.saveXML({ format: true })
+      .then(({ xml }: { xml: string }) => {
+        console.log("BPMN diagram saved as", xml);
+        // Here you would typically provide a save dialog
+        // For now, just download the file
+        const blob = new Blob([xml], { type: "application/xml" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "diagram.bpmn";
+        a.click();
+        URL.revokeObjectURL(url);
+      })
+      .catch((err: Error) => {
+        console.error("Error saving BPMN diagram", err);
+      });
+  };
+
+  const handleDeploy = () => {
+    if (!modeler) return;
+    
+    modeler.saveXML({ format: true })
+      .then(({ xml }: { xml: string }) => {
+        console.log("BPMN diagram ready for deployment", xml);
+        // Here you would typically send to a deployment endpoint
+        // For now, just log to console
+        
+        // Example of how to validate and deploy
+        fetch("/api/xml/validate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ xml }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.valid) {
+            console.log("Diagram is valid and ready for deployment");
+          } else {
+            console.error("Diagram validation failed", data.errors);
+          }
+        })
+        .catch(err => {
+          console.error("Error validating diagram", err);
+        });
+      })
+      .catch((err: Error) => {
+        console.error("Error preparing BPMN diagram for deployment", err);
+      });
   };
 
   const canvasStyles: React.CSSProperties = {
@@ -152,10 +246,15 @@ export default function Canvas({
   return (
     <div style={canvasStyles}>
       <Toolbar
+        modeler={modeler}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
         onZoomReset={handleZoomReset}
         zoomLevel={zoomLevel}
+        onSave={handleSave}
+        onSaveAs={handleSaveAs}
+        onImport={handleImportXml}
+        onDeploy={handleDeploy}
       />
 
       <div

@@ -10,11 +10,11 @@ interface PropertiesPanelProps {
   modeler: any;
 }
 
-export default function PropertiesPanel({ 
-  width, 
+export default function PropertiesPanel({
+  width,
   onWidthChange,
   selectedElement,
-  modeler
+  modeler,
 }: PropertiesPanelProps) {
   const [isResizing, setIsResizing] = useState(false);
   const resizeRef = useRef<HTMLDivElement>(null);
@@ -23,25 +23,25 @@ export default function PropertiesPanel({
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing) return;
-      
+
       const newWidth = window.innerWidth - e.clientX;
       if (newWidth >= 250 && newWidth <= 500) {
         onWidthChange(newWidth);
       }
     };
-    
+
     const handleMouseUp = () => {
       setIsResizing(false);
     };
-    
+
     if (isResizing) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
     }
-    
+
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isResizing, onWidthChange]);
 
@@ -49,12 +49,15 @@ export default function PropertiesPanel({
   if (!selectedElement) {
     return (
       <>
-        <div 
+        <div
           ref={resizeRef}
-          className="w-1 bg-gray-200 hover:bg-primary cursor-col-resize"
+          className="w-1 bg-gray-200 hover:bg-primary cursor-col-resize scrollbar"
           onMouseDown={() => setIsResizing(true)}
         />
-        <div className="bg-white border-l border-gray-200 flex flex-col" style={{ width }}>
+        <div
+          className="bg-white border-l border-gray-200 flex flex-col"
+          style={{ width }}
+        >
           <div className="p-3 border-b border-gray-200 flex justify-between items-center">
             <h2 className="font-medium text-sm">Properties</h2>
           </div>
@@ -68,19 +71,22 @@ export default function PropertiesPanel({
 
   return (
     <>
-      <div 
+      <div
         ref={resizeRef}
         className="w-1 bg-gray-200 hover:bg-primary cursor-col-resize"
         onMouseDown={() => setIsResizing(true)}
       />
-      <div className="bg-white border-l border-gray-200 flex flex-col" style={{ width }}>
+      <div
+        className="bg-white border-l border-gray-200 flex flex-col"
+        style={{ width }}
+      >
         <div className="p-3 border-b border-gray-200 flex justify-between items-center">
           <h2 className="font-medium text-sm">Properties</h2>
           <button className="text-gray-500 hover:text-gray-700 p-1">
             <XIcon className="h-4 w-4" />
           </button>
         </div>
-        
+
         {/* New configurable property panel */}
         <PropertyPanel
           selectedElement={selectedElement}
