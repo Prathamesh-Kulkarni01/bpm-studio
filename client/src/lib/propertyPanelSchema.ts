@@ -81,7 +81,7 @@ export interface PropertyDefinition {
   inputType?: PropertyInputType;
   group: string;
   description?: string;
-  placeholder?: string;
+  placeholder?: string | ((element: any, values: Record<string, any>) => string);
   tooltip?: string;
   defaultValue?: any;
   options?: PropertyOption[] | string; // Direct options or API endpoint

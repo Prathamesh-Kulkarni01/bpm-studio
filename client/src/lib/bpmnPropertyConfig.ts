@@ -422,7 +422,8 @@ export const bpmnPropertyPanelConfig: PropertyPanelSchema = {
       },
       dependencies: [],
       visibility: {
-        condition: "element.type === 'bpmn:UserTask' || element.type === 'bpmn:StartEvent'"
+        condition: "(element.type === 'bpmn:UserTask') || (element.type === 'bpmn:StartEvent' && values.useCustomModel !== true)",
+        dependsOn: ["useCustomModel"]
       }
     },
     {
@@ -437,7 +438,8 @@ export const bpmnPropertyPanelConfig: PropertyPanelSchema = {
       },
       dependencies: [],
       visibility: {
-        condition: "element.type === 'bpmn:UserTask' || element.type === 'bpmn:StartEvent'"
+        condition: "(element.type === 'bpmn:UserTask') || (element.type === 'bpmn:StartEvent' && values.useCustomModel !== true)",
+        dependsOn: ["useCustomModel"]
       }
     },
     // Gateway specific properties
@@ -507,7 +509,9 @@ export const bpmnPropertyPanelConfig: PropertyPanelSchema = {
       type: "Enum",
       group: "Model Configuration",
       description: "Select the model type for this event.",
-      placeholder: "Select model...",
+      placeholder: (element, values) => {
+        return values.useCustomModel ? "Select custom model..." : "Select real model...";
+      },
       fetchOptions: true,
       optionsUrl: "/api/custom-models",
       optionsFilter: (element, values) => {
@@ -536,8 +540,8 @@ export const bpmnPropertyPanelConfig: PropertyPanelSchema = {
       },
       dependencies: [],
       visibility: {
-        condition: "element.type === 'bpmn:StartEvent' || element.type === 'bpmn:EndEvent'",
-        dependsOn: ["modelType"]
+        condition: "(element.type === 'bpmn:StartEvent' || element.type === 'bpmn:EndEvent') && values.useCustomModel === true",
+        dependsOn: ["modelType", "useCustomModel"]
       }
     },
     // Event specific properties
