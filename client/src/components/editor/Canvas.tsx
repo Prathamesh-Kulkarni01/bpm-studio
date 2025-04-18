@@ -155,8 +155,9 @@ export default function Canvas({
   // Import BPMN XML
   const handleImportXml = (xml: string) => {
     if (!modeler) return;
-    
-    modeler.importXML(xml)
+
+    modeler
+      .importXML(xml)
       .then(() => {
         console.log("BPMN diagram imported successfully");
         // Fit the diagram to the viewport
@@ -169,8 +170,9 @@ export default function Canvas({
 
   const handleSave = () => {
     if (!modeler) return;
-    
-    modeler.saveXML({ format: true })
+
+    modeler
+      .saveXML({ format: true })
       .then(({ xml }: { xml: string }) => {
         console.log("BPMN diagram saved", xml);
         // Here you would typically save to server or localStorage
@@ -182,20 +184,26 @@ export default function Canvas({
   };
 
   const handleSaveAs = () => {
-    if (!modeler) return;
-    
-    modeler.saveXML({ format: true })
+    if (!modeler) {
+      console.error("Modeler is not initialized.");
+      return;
+    }
+
+    modeler
+      .saveXML({ format: true })
       .then(({ xml }: { xml: string }) => {
         console.log("BPMN diagram saved as", xml);
-        // Here you would typically provide a save dialog
-        // For now, just download the file
-        const blob = new Blob([xml], { type: "application/xml" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "diagram.bpmn";
-        a.click();
-        URL.revokeObjectURL(url);
+        try {
+          const blob = new Blob([xml], { type: "application/xml" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "diagram.bpmn";
+          a.click();
+          URL.revokeObjectURL(url);
+        } catch (downloadError) {
+          console.error("Error creating download link", downloadError);
+        }
       })
       .catch((err: Error) => {
         console.error("Error saving BPMN diagram", err);
@@ -204,13 +212,14 @@ export default function Canvas({
 
   const handleDeploy = () => {
     if (!modeler) return;
-    
-    modeler.saveXML({ format: true })
+
+    modeler
+      .saveXML({ format: true })
       .then(({ xml }: { xml: string }) => {
         console.log("BPMN diagram ready for deployment", xml);
         // Here you would typically send to a deployment endpoint
         // For now, just log to console
-        
+
         // Example of how to validate and deploy
         fetch("/api/xml/validate", {
           method: "POST",
@@ -219,17 +228,17 @@ export default function Canvas({
           },
           body: JSON.stringify({ xml }),
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.valid) {
-            console.log("Diagram is valid and ready for deployment");
-          } else {
-            console.error("Diagram validation failed", data.errors);
-          }
-        })
-        .catch(err => {
-          console.error("Error validating diagram", err);
-        });
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.valid) {
+              console.log("Diagram is valid and ready for deployment");
+            } else {
+              console.error("Diagram validation failed", data.errors);
+            }
+          })
+          .catch((err) => {
+            console.error("Error validating diagram", err);
+          });
       })
       .catch((err: Error) => {
         console.error("Error preparing BPMN diagram for deployment", err);
