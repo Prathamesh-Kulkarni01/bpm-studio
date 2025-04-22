@@ -98,9 +98,10 @@ export interface PropertyDefinition {
   customProps?: Record<string, any>;
   onChange?: string | ((value: any, element: any, values: Record<string, any>) => void);
   customStyle?: Record<string, any>;
+  renderer?: React.ComponentType<any>;
   mapping?: {
-    sourceProperty?: string;
-    targetProperty?: string;
+   sourceProperty?: string;
+   targetProperty?: string;
     transform?: (value: any) => any;
   };
 }

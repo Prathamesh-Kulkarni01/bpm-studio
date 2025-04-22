@@ -55,7 +55,23 @@ export const bpmnPropertyPanelConfig: PropertyPanelSchema = {
       dependencies: [],
       visibility: {
         condition: "always"
-      }
+      },
+      renderer: "CustomNameRenderer"
+    },
+    {
+      name: "color",
+      type: "color",
+      group: "General",
+      description: "Color of the BPMN element.",
+      fetchOptions: false,
+      validation: {
+        required: false
+      },
+      dependencies: [],
+      visibility: {
+        condition: "always"
+      },
+      renderer: "ColorPicker"
     },
     {
       name: "documentation",
