@@ -84,7 +84,7 @@ export default function ConfigurablePropertyPanel({
   // Extract initial values from the element
   useEffect(() => {
     if (!element) return;
-    
+    console.log('Element:', element); 
     const initialValues: Record<string, any> = {};
     
     // Get element ID and type as base values
@@ -103,12 +103,14 @@ export default function ConfigurablePropertyPanel({
             obj = obj?.[parts[i]];
             if (!obj) break;
           }
+      
           value = obj?.[parts[parts.length - 1]];
         } else {
           // Direct properties
-          value = element.businessObject?.[prop.name];
+          const bo = element.businessObject;
+          value = bo?.[prop.name]|| bo?.$attrs?.[prop.name];;
         }
-        
+        console.log(`Property ${prop.name}:`, value,element.businessObject.jobPriority);
         // If no value is found, use default
         initialValues[prop.name] = value !== undefined ? value : prop.defaultValue;
       } catch (error) {
